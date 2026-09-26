@@ -54,7 +54,12 @@
         return String(s ?? "").trim().toLowerCase().replace(/[–—]/g, "-").replace(/\s+/g, " ");
       }
       function normTime(s) {
-        return norm(s).replace(/\best\b|\bedt\b|\bet\b/g, "").replace(/\s+/g, " ").trim().replace(/\s+(am|pm)$/, " $1");
+        return norm(s)
+          .replace(/\b(est|edt|et)\b/g, "")
+          .replace(/\s+/g, "")
+          .replace(/:00/g, "")
+          .replace(/(am|pm)-(?=\d)/g, "-")
+          .trim();
       }
       function findHeader(headers, pred) {
         const i = headers.findIndex((h) => pred(norm(h)));
@@ -174,17 +179,33 @@
         return [...m.values()];
       }
       function studentAvailable(s, g) {
-        // Affinity groups are open to both undergraduate and graduate students
-        // who explicitly selected that affinity group.
-        if (g.affinity) return s.affinity.includes(g.affinity);
+        // Affinity groups are open to anyone who explicitly selected that affinity.
+        if (g.affinity) {
+          return s.affinity.includes(g.affinity);
+        }
 
-        // Regular groups still stay separated by academic level.
-        if (s.cohort !== g.cohort) return false;
+        // Regular groups must match academic level.
+        if (s.cohort !== g.cohort) {
+          return false;
+        }
 
-        const v = normTime(s.availability[g.day] || "");
-        if (!v || v.includes("not available")) return false;
-        const gt = normTime(g.time);
-        return v.split(",").map(normTime).includes(gt);
+        const rawAvailability = String(s.availability[g.day] || "");
+
+        if (
+          !rawAvailability ||
+          norm(rawAvailability).includes("not available")
+        ) {
+          return false;
+        }
+
+        const groupTime = normTime(g.time);
+
+        const availableTimes = rawAvailability
+          .split(/[,;\n]/)
+          .map(normTime)
+          .filter(Boolean);
+
+        return availableTimes.includes(groupTime);
       }
 
       // Successive-shortest-path min-cost flow. Small graph; SPFA keeps the implementation self-contained.
