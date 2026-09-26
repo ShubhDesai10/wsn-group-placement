@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; media-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>WSN Group Assigner</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div>
+          <h1>WSN Group Assigner</h1>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="card center-card">
+          <h2>Upload CSV</h2>
+          <label id="drop" class="drop" for="file">
+            <span class="drop-title">Choose CSV</span>
+            <input id="file" type="file" accept=".csv,text/csv" />
+          </label>
+          <div id="fileStatus" class="status">No participant file loaded.</div>
+        </section>
+
+        <section class="card center-card">
+          <h2>Assignment Rules</h2>
+          <div class="row">
+            <div class="field tiny">
+              <label for="target">Target size</label>
+              <input id="target" type="number" min="1" max="10" value="5" />
+            </div>
+          </div>
+          <p class="small muted">
+            Target Size: Number of people the website tries to put in each group.
+
+          </p>
+          <div class="row mt-14">
+            <button id="assignBtn" class="btn" disabled>Assign groups</button>
+            <button id="clearBtn" class="btn danger" disabled>
+              Clear participant data
+            </button>
+          </div>
+        </section>
+
+        <section class="card full">
+          <div class="row space">
+            <div>
+              <h2>Groups</h2>
+            </div>
+            <div class="row">
+              <button id="addGroup" class="btn secondary">Add group</button>
+            </div>
+          </div>
+          <div class="tablewrap mt-12">
+            <table id="groupTable">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Time</th>
+                  <th>Room</th>
+                  <th>Academic Level</th>
+                  <th>Affinity</th>
+                  <th>Facilitators</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="summaryCard" class="card full hidden">
+          <div class="row space">
+            <div>
+              <h2>Assignment summary</h2>
+              <div id="summaryText" class="muted small"></div>
+            </div>
+            <div class="row">
+                <button id="downloadRosters" class="btn secondary">
+                Download rosters CSV
+              </button>
+            </div>
+          </div>
+          <div id="stats" class="stats"></div>
+          <div id="warnings"></div>
+        </section>
+
+        <section id="groupsCard" class="card full hidden">
+          <h2>Group rosters</h2>
+          <div id="groupCards" class="groupcards"></div>
+        </section>
+
+        <section id="peopleCard" class="card full hidden">
+          <h2>Participant assignments</h2>
+          <div class="tablewrap">
+            <table id="peopleTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Cohort</th>
+                  <th>Affinity interest</th>
+                  <th>Assignment</th>
+                  <th>Affinity placed?</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
